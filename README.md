@@ -1,5 +1,5 @@
 # shop-client
-#hello
+
 ## Project setup
 ```
 yarn install
