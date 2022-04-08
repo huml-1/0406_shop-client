@@ -1,14 +1,29 @@
 <template>
   <div id="app">
-    <h2>hello</h2>
+    <Header></Header>
+    <!-- 所有的一级路由都在这 -->
+    <router-view></router-view>
+    <Footer></Footer>
   </div>
 </template>
 
 <script>
+import Header from '@/components/Header'
+import Footer from '@/components/Footer'
+// import {reqBaseCategoryList} from '@/api'
 
 export default {
   name: 'App',
- 
+  components:{Header,Footer},
+  
+  // async mounted () {
+  //     const result = await reqBaseCategoryList()
+  //     console.log('result', result)
+  // },
+ mounted(){
+  //  分发请求获取分类列表的异步action
+   this.$store.dispatch('getCategoryList')
+ }
 }
 </script>
 
