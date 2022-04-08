@@ -4,4 +4,13 @@
 import ajax from './ajax'
 
 //获取商品的三级分类列表
-export const reqCategoryList = ()=>ajax.get('/product/getBaseCategoryList')
+export function reqCategoryList(){
+    return ajax({
+        url:'/product/getBaseCategoryList',
+
+    })
+}
+
+//获取主页广告轮播
+export const reqBannerList=()=>ajax('/cms/banner')
+

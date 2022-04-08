@@ -5,6 +5,8 @@ import router from './router'
 import TypeNav from '@/components/TypeNav';
 import store from '@/store'
 // import 'swiper/css/swiper.css';
+import './plugins/swiper'
+import  './mock/mockServer'
 
 // 第一个参数是全局组件的名字
 Vue.component(TypeNav.name,TypeNav)

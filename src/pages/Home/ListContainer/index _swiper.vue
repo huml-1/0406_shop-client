@@ -3,15 +3,22 @@
         <div class="list-container">
             <div class="sortList clearfix">
                 <div class="center">
-                    <!-- 轮播 -->
-                    <swiper :options="swiperOptions">
-                        <swiper-slide  v-for="banner in bannerList" :key="banner.id">
-                            <img :src="banner.imageUrl" />
-                        </swiper-slide>
-                        <div class="swiper-pagination" slot="pagination"></div>
-                        <button class="swiper-button-prev" slot="button-prev"></button>
-                        <button class="swiper-button-next" slot="button-next"></button>
-                    </swiper>
+                    <div 
+                        class="swiper-container"
+                        ref="swiper"
+                     >
+                        <div class="swiper-wrapper" >
+                            <div class="swiper-slide" v-for="banner in bannerList" :key="banner.id">
+                                <img :src="banner.imageUrl" />
+                            </div>
+                        </div>
+                        <!-- 如果需要分页器 -->
+                        <div class="swiper-pagination"></div>
+                        
+                        <!-- 如果需要导航按钮 -->
+                        <div class="swiper-button-prev"></div>
+                        <div class="swiper-button-next"></div>
+                    </div>
                 </div>
                 <div class="right">
                     <div class="news">
@@ -97,12 +104,24 @@
 </template>
 
 <script>
+import Swiper from 'swiper'
+import 'swiper/css/swiper.css'
 import {mapState} from 'vuex'
 export default {
     name:'ListContainer',
-    data() {
-        return {
-            swiperOptions:{
+    computed:{
+        ...mapState({
+            bannerList:state=>state.home.bannerList
+        })
+    },
+    mounted(){
+        
+    },
+    watch:{
+        bannerList(){
+            // $nextick
+            this.$nextTick(()=>{
+                new Swiper (this.$refs.swiper, {
                 // direction: 'vertical', // 垂直切换选项
                 loop: true, // 循环模式选项
                 autoplay:{
@@ -119,15 +138,11 @@ export default {
                 navigation: {
                 nextEl: '.swiper-button-next',
                 prevEl: '.swiper-button-prev',
-            },
-        },
+                },
+            })  
+        })      
+        }
     }
-},
-    computed:{
-        ...mapState({
-            bannerList:state=>state.home.bannerList
-        })
-    },
 }
 </script>
 

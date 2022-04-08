@@ -1,10 +1,11 @@
 /* 
 vuex管理的home模块
 */
-import {reqCategoryList} from '@/api'
+import {reqCategoryList,reqBannerList} from '@/api'
 
 const state = {
-  baseCategoryList: [], // 所有分类的数组
+  CategoryList: [], // 所有分类的数组
+  bannerList:[],
 }
 
 const mutations = {
@@ -13,7 +14,13 @@ const mutations = {
   */
   RECEIVE_CATEGORY_LIST(state,categoryList){
       state.categoryList=categoryList.splice(0,15)
-  }
+  },
+  /* 
+  接收保存guanggao列表
+  */
+  RECEIVE_BANNER_LIST(state,bannerList){
+      state.bannerList=bannerList.splice(0,15)
+  },
 }
 
 const actions = {
@@ -28,7 +35,19 @@ const actions = {
         const categoryList=result.data
         commit('RECEIVE_CATEGORY_LIST',categoryList)
     }
-  }
+  },
+    /* 
+    异步获取guanggaolunbo0三级分类列表
+    */
+    async getBannerList({commit}){
+      // 调用接口请求函数
+      const result= await reqBannerList()
+      // 如果请求成功取出数据去提交给mutation保存
+      if(result.code===200){
+          const bannerList=result.data
+          commit('RECEIVE_BANNER_LIST',bannerList)
+      }
+    },
 }
 
 const getters = {

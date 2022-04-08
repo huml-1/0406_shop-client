@@ -8,7 +8,7 @@
           <div class="sort" v-show="isShowFirst">
             <div class="all-sort-list2" @click="toSearch">
               <div class="item" v-for="(c1, index) in categoryList" :key="c1.categoryId"
-                :class="{item_on: index===currentIndex}" @mouseenter="showSubCategorys(index)"
+                :class="{item_on:index===currentIndex}" @mouseenter="showSubCategorys(index)"
                 >
                 <h3>
                   <a href="javascript:" :data-categoryName="c1.categoryName"
