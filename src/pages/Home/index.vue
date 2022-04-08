@@ -6,23 +6,32 @@
     <Recommend />
     <Rank />
     <Like/>
-    <Floor />
-    <Floor />
+    <Floor v-for="floor in floors" :key="floor.id" :floor="floor"/>
     <Brand/>
   </div>
 </template>
 
 <script>
-import ListContainer from '@/pages/Home/ListContainer'
-import Recommend from '@/pages/Home/Recommend'
-import Rank from '@/pages/Home/Rank'
-import Like from '@/pages/Home/Like'
-import Floor from '@/pages/Home/Floor'
-import Brand from '@/pages/Home/Brand'
+import {mapState} from 'vuex'
+import ListContainer from './ListContainer/index.vue'
+import Recommend from './Recommend/index.vue'
+import Rank from './Rank/index.vue'
+import Like from './Like/index.vue'
+import Floor from './Floor/index.vue'
+import Brand from './Brand/index.vue'
 
 
 export default {
     name:'Home',
+    mounted(){
+      this.$store.dispatch('getRecommends')
+      this.$store.dispatch('getFloors')   
+    },
+    computed:{
+      ...mapState({
+        floors:state=>state.home.floors,
+      })
+    },
 
     components:{
       ListContainer,
