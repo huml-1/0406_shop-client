@@ -4,6 +4,7 @@ import router from './router'
 // 三级联动的组件全局组件
 import TypeNav from '@/components/TypeNav';
 import store from '@/store'
+// import 'swiper/css/swiper.css';
 
 // 第一个参数是全局组件的名字
 Vue.component(TypeNav.name,TypeNav)

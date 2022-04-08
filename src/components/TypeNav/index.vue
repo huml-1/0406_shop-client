@@ -8,7 +8,8 @@
           <div class="sort" v-show="isShowFirst">
             <div class="all-sort-list2" @click="toSearch">
               <div class="item" v-for="(c1, index) in categoryList" :key="c1.categoryId"
-                :class="{item_on: index===currentIndex}" @mouseenter="showSubCategorys(index)">
+                :class="{item_on: index===currentIndex}" @mouseenter="showSubCategorys(index)"
+                >
                 <h3>
                   <a href="javascript:" :data-categoryName="c1.categoryName"
                     :data-category1Id="c1.categoryId">{{c1.categoryName}}</a>
@@ -122,7 +123,7 @@
       showSubCategorys: throttle(function (index) {
         // 如果已经移出了整个div, 不需要更新
         // if (this.currentIndex === -2) return
-        console.log(index)
+        // console.log(index)
         this.currentIndex = index
       }, 200, {trailing: false}),// 最后不延迟执行
 

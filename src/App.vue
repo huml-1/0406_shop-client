@@ -3,7 +3,7 @@
     <Header></Header>
     <!-- 所有的一级路由都在这 -->
     <router-view></router-view>
-    <Footer></Footer>
+    <Footer v-show="!$route.meta.isHideFooter"></Footer>
   </div>
 </template>
 
@@ -15,15 +15,10 @@ import Footer from '@/components/Footer'
 export default {
   name: 'App',
   components:{Header,Footer},
-  
-  // async mounted () {
-  //     const result = await reqBaseCategoryList()
-  //     console.log('result', result)
-  // },
- mounted(){
-  //  分发请求获取分类列表的异步action
-   this.$store.dispatch('getCategoryList')
- }
+  mounted(){
+    //  分发请求获取分类列表的异步action
+    this.$store.dispatch('getCategoryList')
+  },
 }
 </script>
 
