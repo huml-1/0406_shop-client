@@ -16,6 +16,7 @@ export function reqCategoryList(){
 //获取主页广告轮播
 export const reqBannerList=()=>ajax('/cms/banner')
 
+
 // mock接口函数
 export const reqRecommends=()=>mockAjax('/recommends')
 export const reqFloors=()=>mockAjax('/floors')
@@ -23,3 +24,5 @@ export const reqFloors=()=>mockAjax('/floors')
 reqFloors().then(result=>{
     // console.log('response',result);
 })
+// 搜索分页
+export const reqSearch=(searchParams)=>ajax.post('/list',searchParams)

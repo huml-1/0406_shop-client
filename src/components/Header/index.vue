@@ -32,10 +32,15 @@
       </h1>
       <div class="searchArea">
         <form class="searchForm">
-          <input type="text" id="autocomplete" class="input-error input-xxlarge" 
-          	v-model="keyword"/>
+          <input
+            type="text"
+            id="autocomplete"
+            class="input-error input-xxlarge"
+            v-model="keyword"
+          />
           <button class="sui-btn btn-xlarge btn-danger" @click.prevent="search">
-              搜索</button>
+            搜索
+          </button>
         </form>
       </div>
     </div>
@@ -43,47 +48,58 @@
 </template>
 
 <script>
-  export default {
-    name: "Header",
-    data() {
-      return {
-        keyword: ''
+export default {
+  name: "Header",
+  data() {
+    return {
+      keyword: "",
+    };
+  },
+
+  methods: {
+    search() {
+      const { keyword } = this;
+
+      /* push(path) */
+      // if (keyword) {
+      //   this.$router.push(`/search/${keyword}?keyword2=${keyword.toUpperCase()}`)
+      // } else {
+      //   this.$router.push(`/search`)
+      // }
+
+      /* push(options) */
+      const location = {
+        name: "search",
+        query: this.$route.query,
+      };
+      if (this.keyword) {
+        location.params = {
+          keyword: this.keyword,
+        };
+      }
+
+      if (this.$route.name === "search") {
+        this.$router.replace(location);
+      } else {
+        this.$router.push(location);
       }
     },
-
-    methods: {
-      search() {
-        const {keyword} = this
-        
-        /* push(path) */
-        // if (keyword) {
-        //   this.$router.push(`/search/${keyword}?keyword2=${keyword.toUpperCase()}`)
-        // } else {
-        //   this.$router.push(`/search`)
-        // }
-        
-        /* push(options) */
-        const location = {
-            name: "search",
-            query:this.$route.query
-        }
-        if (this.keyword) {
-            location.params = {
-                keyword:this.keyword
-            };
-            
-        }
-
-        this.$router.push(location)
-        }
-
-    }
-  }
+  },
+  mounted() {
+    this.$bus.$on("removeKeyword", () => {
+      this.keyword = "";
+    });
+  },
+  // 解除绑定
+  beforeDestroy() {
+    this.$bus.off("removeKeyword");
+  },
+};
 </script>
 
 <style lang="less" scoped>
 .header {
-  &>.top {
+  & > .top {
     background-color: #eaeaea;
     height: 30px;
     line-height: 30px;
@@ -114,17 +130,15 @@
         a {
           padding: 0 10px;
 
-          &+a {
+          & + a {
             border-left: 1px solid #b3aeae;
           }
         }
-
       }
-
     }
   }
 
-  &>.bottom {
+  & > .bottom {
     width: 1200px;
     margin: 0 auto;
     overflow: hidden;

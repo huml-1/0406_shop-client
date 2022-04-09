@@ -13,7 +13,7 @@ export default[
         path: '/search/:keyword?',  // 需要指定params参数, 标识名称是keyword
         // path: '/search/:keyword',  // 需要指定params参数, 标识名称是keyword
         component:Search,
-        props: route => ({keyword3: route.params.keyword, keyword4: route.query.keyword2, xxx: 12})
+        props: (route)=> ({keyword3: route.params.keyword, keyword4: route.query.keyword2, xxx: 12})
 
     },
     {
