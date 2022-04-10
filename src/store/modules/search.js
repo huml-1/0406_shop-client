@@ -53,6 +53,10 @@ const getters = {
   attrsList(state){
     return state.productList.attrsList || []
   },
+  // 总数量
+  total(state){
+    return state.productList.total || 0
+  }
 
 }
 

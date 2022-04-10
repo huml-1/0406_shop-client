@@ -1,165 +1,129 @@
 <template>
-  <div class="pagination">
-    <!-- 当前页码等于1就不可操作 -->
-    <button :disabled="mcPage===1" @click="changeCurrentPage(mcPage-1)">上一页</button>
-    <!-- 只有start大于1 -->
-    <button v-if="startEnd.start>1" @click="changeCurrentPage(1)">1</button>
-    <!-- 只有start大于2 -->
-    <button disabled v-if="startEnd.start>2">···</button>
+    <div class="pagination">
+      <button :disabled="myCurrentPage===1" :class="{disable:myCurrentPage===1}" @click="setCurrentPage(myCurrentPage-1)">上一页</button>
+      <button v-show="startEnd.start!=1"  @click="setCurrentPage(1)">1</button>
+      <button  class="disable" v-if="startEnd.start>2">...</button>
 
-    <!-- 连续页码 -->
-    <button v-for="item in startEnd.end" v-if="item>=startEnd.start" :key="item"
-      @click="changeCurrentPage(item)" :class="{active: mcPage===item}">
-      {{item}}
-    </button>
-    <!-- 只有end<totalPages-1才显示  -->
-    <button disabled v-if="startEnd.end<totalPages-1">···</button>
-    <!-- 只有end<totalPages才显示 -->
-    <button v-if="startEnd.end<totalPages" @click="changeCurrentPage(totalPages)">{{totalPages}}</button>
-    <!-- 当前页码等于总页码就不可操作 -->
-    <button :disabled="mcPage===totalPages" @click="changeCurrentPage(mcPage+1)">下一页</button>
-    <!-- 总记录数 -->
-    <button style="margin-left: 30px">共 {{total}} 条</button>
-  </div>
+      <!-- <button 
+        v-for="item in startEnd.end "
+        v-if="item>=startEnd.start"
+        :class="{active:item===myCurrentPage}"
+        @click="setCurrentPage(item)"
+        >{{item}}</button> -->
+
+         <button 
+          v-for="item in startEndArr"
+          :class="{active:item===myCurrentPage}"
+          @click="setCurrentPage(item)"
+        >{{item}}</button>
+      <!-- <button>3</button>
+      <button>4</button>
+      <button class="active">5</button>
+      <button>6</button>
+      <button>7</button> -->
+
+       <button  class="disable" v-if="startEnd.end<totalPages-1">...</button>
+        <button v-show="startEnd.end<totalPages"
+       >{{totalPages}}</button>
+      <button :disabled="myCurrentPage===totalPages" :class="{disable:myCurrentPage===totalPages}" @click="setCurrentPage(myCurrentPage+1)">下一页</button>
+      <button class="disable">共 {{total}}条</button>
+    </div>
 </template>
 
 <script>
-  export default {
-    name: "Pagination",
-
-    props: {
-      currentPage: { // 当前页码
-        type: Number,
-        default: 1
-      },
-      pageSize: { // 每页数量
-        type: Number,
-        default: 5
-      },
-      total: { // 总数量
-        type: Number,
-        default: 0
-      },
-      showPageNo: { // 连续页码数
-        type: Number,
-        default: 5
+export default {
+  name:'Pagination',
+  props:{
+    currentPage:{
+      type:Number,
+      default:1
+    },
+    total:{
+      type:Number,
+      default:34
+    },
+    pageSize:{
+      type:Number,
+      default:10
+    },
+    showPageNo:{//连续页码数
+      type:Number,
+      default:5,
+      // 要求传入的值是奇数
+      validator:function(value){
+        return value%2===1
       }
+    }
+  },
+  data() {
+    return {
+      myCurrentPage:this.currentPage //初始值由父组件来指定
+    }
+  },
+  computed:{
+   
+    // 总页数
+    totalPages(){
+      const {total,pageSize}=this
+      return Math.ceil(total/pageSize)
     },
 
-    data () {
-      return {
-        mcPage: this.currentPage  // 保存自己的当前页码
+    // 包含从start到end的数组
+     startEndArr(){
+      const arr=[]
+      const {start,end} =this.startEnd
+      for (let page = start; page < end; page++) {
+          arr.push(page); 
       }
+      return arr
     },
 
-    computed: {
+    // start 和 end 连续页码数开始的页码数和结束的页码数 {start:3,end:7}
+    startEnd(){
+      let start,end
+      const {myCurrentPage,showPageNo,totalPages}=this
 
-      /* 
-      总页码数
-      依赖数据: 
-        总数量: total    
-        每页数量: pageSize  
-      */
-      totalPages () {
-        // 取出依赖数据   31 5 ==> 7
-        const {total, pageSize} = this
-        // 返回计算后的结果
-        return Math.ceil(total/pageSize)
-      },
-
-      /* 
-      返回连续页码的开始页码(start)与结束页码(end): 
-      比如: {start: 3, end: 7}
-      依赖数据:
-          当前页码: mcPage
-          最大连续页码数: showPageNo
-          总页码数: totalPages
-      注意:
-          start的最小值为1
-          end的最大值为totalPages
-          start与end之间的最大差值为showPageNo-1
-      */
-      startEnd () {
-        const {mcPage, showPageNo, totalPages} = this
-
-        // 计算start
-        /* 
-        mcPage showPageNo totalPages     start到end
-          4        5          10           23[4]56
-        */
-        let start = mcPage - Math.floor(showPageNo/2)  // 4 - 2
-        /* 
-        mcPage showPageNo totalPages  start到end
-          2        5          10         1[2]345
-        但start上面计算得到是: 0
-        */
-        // start的最小值是1, 如果小于1, 修正为1
-        if (start<1) {
-          start = 1
+      // 计算start
+      start=myCurrentPage-Math.floor(showPageNo/2)
+      // 如果currentPage比较小，计算的结果有可能小于1 start 应该要大于等于1
+      if(start<1){
+        start=1
+      }
+      // 计算end
+      end=start+showPageNo-1
+      // end的最大值为totalPages
+      if(end>totalPages){
+        // 修正end
+        end=totalPages
+        // 修正start
+        start=end-showPageNo+1
+        // 一一旦总页数小于量最大连续页码数，就会导致start<1
+        if(start<1){
+          start=1
         }
-
-        // 计算end
-        /* 
-        mcPage showPageNo totalPages     start到end
-          4        5          10           23[4]56
-        */
-        // start与end之间的最大差值为showPageNo-1
-        let end = start + showPageNo - 1    // 2 + 5 -1
-
-
-        /* 
-        mcPage showPageNo totalPages     start到end
-          4        5          5           123[4]5
-        但上面计算的end为6, 应该为5    ==> end = totalPages
-                   start为2, 应该为1  ==> start = end - showPageNo + 1
-        */
-        // 如果end超过了totalPages, 修正为totalPages
-        if (end > totalPages) {
-          end = totalPages
-          // 根据最大连续页码修正start
-          start = end - showPageNo + 1
-
-          /* 
-           mcPage showPageNo totalPages     start到end
-              4        5          4           123[4]
-            上面计算
-                start为0  应该为1
-                end为4   没问题
-          */
-          // start不能小于最小值1
-          if (start<1) {
-            start = 1
-          }
-        }
-
-        return {start, end}
       }
+      return {start,end}
+    }
+  },
+  watch:{
+    currentPage(value){
+      this.myCurrentPage=value
+    }
+  },
+  methods:{
+    // 设置新的当前页吗
+    setCurrentPage(page){
+      // 如果页码没有变化
+      if(page===this.myCurrentPage) return
+      // 更新当前页码
+      this.myCurrentPage=page
+      // 分发自定义事件
+      this.$emit('currentChange',page)
     },
-
-    watch: {
-      /*
-      当接收的currentPage发生改变时调用 
-       */
-      currentPage (value) {
-        // 将当前页码指定为外部传入的值
-        this.mcPage = value
-      }
-    },
-
-    methods: {
-
-      /* 
-      将当前页码改为指定页码
-      */
-      changeCurrentPage (page) {
-        // 修改当前页码
-        this.mcPage = page
-        // 通知外部父组件
-        this.$emit('currentChange', page)
-      }
-    },
-  }
+  },
+}
 </script>
+
 <style lang="less" scoped>
   .pagination {
     button {
@@ -192,4 +156,5 @@
       }
     }
   }
+  
 </style>

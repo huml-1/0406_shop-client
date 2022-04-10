@@ -104,35 +104,13 @@
               </li>
             </ul>
           </div>
-          <div class="fr page">
-            <div class="sui-pagination clearfix">
-              <ul>
-                <li class="prev disabled">
-                  <a href="#">«上一页</a>
-                </li>
-                <li class="active">
-                  <a href="#">1</a>
-                </li>
-                <li>
-                  <a href="#">2</a>
-                </li>
-                <li>
-                  <a href="#">3</a>
-                </li>
-                <li>
-                  <a href="#">4</a>
-                </li>
-                <li>
-                  <a href="#">5</a>
-                </li>
-                <li class="dotted"><span>...</span></li>
-                <li class="next">
-                  <a href="#">下一页»</a>
-                </li>
-              </ul>
-              <div><span>共10页&nbsp;</span></div>
-            </div>
-          </div>
+         <Pagination 
+            :currentPage="options.pageNo"
+            :total="total"
+            :pageSize="options.pageSize"
+            :showPageNo="5"
+            @currentChange="getShopList"
+         />
         </div>
       </div>
     </div>
@@ -158,8 +136,8 @@ import search from '@/store/modules/search'
             props: [], // 商品属性的数组: ["属性ID:属性值:属性名"] ["2:6.0～6.24英寸:屏幕尺寸"]
             order: '1:asc', // 排序方式  1: 综合,2: 价格 asc: 升序,desc: 降序  "1:desc"
 
-            pageNo: 1, // 页码
-            pageSize: 5, //	每页数量
+            pageNo: 5, // 页码
+            pageSize: 3, //	每页数量
           }
       }
     },
@@ -182,7 +160,7 @@ import search from '@/store/modules/search'
       // ...mapState({
       //   goodsList:state=>state.search.productList.goodsList 
       // })
-      ...mapGetters(['goodsList']),
+      ...mapGetters(['goodsList','total']),
       // 得到包含当前分类项标识（orderFlag）he排序方式（orderType）的数组
       orderArr(){
         return this.options.order.split(':')
@@ -203,8 +181,12 @@ import search from '@/store/modules/search'
       }      
     },
     methods:{
+      // 当前页码发生改变得到事件回调
+      // currentChange(page){
+      //   this.getShopList(page)
+      // },
+
       // 设置新的排序搜索方式
-      
       setOrder(orderFlag){
         let [flag,type]=this.orderArr
         if(orderFlag===flag){
@@ -290,8 +272,9 @@ import search from '@/store/modules/search'
           categoryName
         }
       },
-      // y异步获取商品列表
-      getShopList(){
+      // 异步获取商品列表
+      getShopList(page=1){
+        this.options.pageNo=page
         // 发搜索的请求
         this.$store.dispatch('getProductList',this.options)
       }
